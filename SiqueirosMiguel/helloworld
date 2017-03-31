@@ -1,5 +1,5 @@
-/ initialize digital pin LED_BUILTIN as an output.
-);
+void setup() {
+  
 }
 
 // the loop function runs over and over again forever

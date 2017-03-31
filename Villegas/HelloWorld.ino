@@ -1,5 +1,9 @@
-//Omar Villegas Castillo 13211106
-//Redes
+//Omar Villegas Castillo
+//NO DE CTRL. 13211106
+//Redes de Computadoras
+//INSTITUTO TECNOLÓGICO DE TIJUANA
+//HELLO WORLD EN ARDUINO 
+//circuits.io
 
 // include the library code:
 #include <LiquidCrystal.h>

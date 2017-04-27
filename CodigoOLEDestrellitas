@@ -1,3 +1,5 @@
+/*link con instrucciones
+/*http://www.instructables.com/id/Monochrome-096-i2c-OLED-display-with-arduino-SSD13/
 /*Tienes que descargar 2 librerias e instalarlas en el arduino 
 /*Adafruit-GFX-Library-master y  Adafruit_SSD1306-master
 /*para la direccion del display la siguiente pagina 

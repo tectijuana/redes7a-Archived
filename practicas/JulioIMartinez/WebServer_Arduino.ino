@@ -45,7 +45,7 @@ EthernetServer server(80);
 
 // CONSTANTES.
 
-const String USUARIO = "Martinez Reyes Julio Ismael (10210544)";
+const String usuario = "Martinez Reyes Julio Ismael (10210544)";
 void setup() {
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
@@ -71,13 +71,8 @@ void setup() {
   // print your local IP address:
 
   printIPAddress();
-
-
-
   // start the Ethernet connection and the server:
-
   server.begin();
-
   // Descomentar si hay una tarjeta SD conectada.
   //pinMode(4, OUTPUT);
   //digitalWrite(4, HIGH);
@@ -107,8 +102,7 @@ void loop() {
           client.println();
           client.println("<!DOCTYPE HTML>");
           client.println("<html>");
-          // Desplegar el nombre de quien programo el servidor.
-          client.print("<p>Autor web server: " + USUARIO + "</p>");
+          client.print("<p>Autor web server: " + usuario + "</p>");
           // output the value of each analog input pin
           for (int analogChannel = 0; analogChannel < 6; analogChannel++) {
             int sensorReading = analogRead(analogChannel);
@@ -140,7 +134,7 @@ void loop() {
 }
 void printIPAddress()
 {
-  Serial.print("Mi direccion IP es: ");
+  Serial.print("Mi direccion de IP es: ");
   for (byte thisByte = 0; thisByte < 4; thisByte++) {
     // print the value of each byte of the IP address:
     Serial.print(Ethernet.localIP()[thisByte], DEC);

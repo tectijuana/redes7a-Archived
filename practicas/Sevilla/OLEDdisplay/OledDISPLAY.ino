@@ -2,16 +2,12 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
-
 #define NUMFLAKES 10
 #define XPOS 0
 #define YPOS 1
 #define DELTAY 2
-
-
 #define LOGO16_GLCD_HEIGHT 16 
 #define LOGO16_GLCD_WIDTH  16 
 static const unsigned char PROGMEM logo16_glcd_bmp[] =
@@ -38,25 +34,11 @@ static const unsigned char PROGMEM logo16_glcd_bmp[] =
 
 void setup()   {                
   Serial.begin(9600);
-
-  // by default, we'll generate the high voltage from the 3.3v line internally! (neat!)
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3C (for the 128x32)
-  // init done
-  
-  // Show image buffer on the display hardware.
-  // Since the buffer is intialized with an Adafruit splashscreen
-  // internally, this will display the splashscreen.
   display.display();
   delay(2000);
-
-  // Clear the buffer.
   display.clearDisplay();
-
-  // draw a single pixel
   display.drawPixel(10, 10, WHITE);
-  // Show the display buffer on the hardware.
-  // NOTE: You _must_ call display after making any drawing commands
-  // to make them visible on the display hardware!
   display.display();
   delay(2000);
   display.clearDisplay();
@@ -148,12 +130,6 @@ void setup()   {
   testdrawbitmap(logo16_glcd_bmp, LOGO16_GLCD_HEIGHT, LOGO16_GLCD_WIDTH);
 }
 
-
-void loop() {
-  
-}
-
-
 void testdrawbitmap(const uint8_t *bitmap, uint8_t w, uint8_t h) {
   uint8_t icons[NUMFLAKES][3];
  
@@ -161,8 +137,7 @@ void testdrawbitmap(const uint8_t *bitmap, uint8_t w, uint8_t h) {
   for (uint8_t f=0; f< NUMFLAKES; f++) {
     icons[f][XPOS] = random(display.width());
     icons[f][YPOS] = 0;
-    icons[f][DELTAY] = random(5) + 1;
-    
+    icons[f][DELTAY] = random(5) + 1; 
     Serial.print("x: ");
     Serial.print(icons[f][XPOS], DEC);
     Serial.print(" y: ");

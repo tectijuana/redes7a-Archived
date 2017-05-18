@@ -21,7 +21,7 @@
 byte mac[] = {
   0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
 };
-IPAddress ip(10, 0, 1, 47);
+IPAddress ip(10, 0, 1, 49);
 
 // Initialize the Ethernet server library
 // with the IP address and port you want to use

@@ -114,98 +114,88 @@ void setup() {
   // Mostrar el buffer en el hardware.
   display.display();
   delay(2000);
-  display.clearDisplay();
+  //display.clearDisplay();
 
   // CONFIGURACION IP.
-  /*
-    // Indicar necesidad de espera de puerto serial.
-    Serial.println("Por favor, espere la conexion serial...");
-    while (!Serial) {
+  // Indicar necesidad de espera de puerto serial.
+  Serial.println("Por favor, espere la conexion serial...");
+  while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
-    }
+  }
 
-    // start the Ethernet connection:
-    if (Ethernet.begin(mac) == 0) {
+  // start the Ethernet connection:
+  if (Ethernet.begin(mac) == 0) {
     Serial.println("Fallo al configurar Ethernet con DHCP");
     // no point in carrying on, so do nothing forevermore:
     for (;;)
       ;
-    }
-    // print your local IP address:
-    printIPAddress();
+  }
+  // print your local IP address:
+  printIPAddress();
 
-    // start the Ethernet connection and the server:
-    server.begin();
+  // start the Ethernet connection and the server:
+  server.begin();
 
-    // Descomentar si hay una tarjeta SD conectada.
-    //pinMode(4, OUTPUT);
-    //digitalWrite(4, HIGH);
-  */
+  // Descomentar si hay una tarjeta SD conectada.
+  //pinMode(4, OUTPUT);
+  //digitalWrite(4, HIGH);
 }
 
 
 void loop() {
-  for (byte numero = 0; numero < 10; numero++) {
-    DesplegarDigito(numero, 1, 1);
-    delay(2500);
-    display.clearDisplay();
-  }
+  // listen for incoming clients
+  EthernetClient client = server.available();
+  if (client) {
+    Serial.println("Nuevo cliente.");
+    // an http request ends with a blank line
+    boolean currentLineIsBlank = true;
+    while (client.connected()) {
+      if (client.available()) {
+        char c = client.read();
+        Serial.write(c);
+        // if you've gotten to the end of the line (received a newline
+        // character) and the line is blank, the http request has ended,
+        // so you can send a reply
+        if (c == '\n' && currentLineIsBlank) {
+          // send a standard http response header
+          client.println("HTTP/1.1 200 OK");
+          client.println("Content-Type: text/html");
+          client.println("Connection: close");  // the connection will be closed after completion of the response
+          client.println("Refresh: 5");  // refresh the page automatically every 5 sec
+          client.println();
+          client.println("<!DOCTYPE HTML>");
+          client.println("<html>");
 
-  /*
-    // listen for incoming clients
-    EthernetClient client = server.available();
-    if (client) {
-      Serial.println("Nuevo cliente.");
-      // an http request ends with a blank line
-      boolean currentLineIsBlank = true;
-      while (client.connected()) {
-        if (client.available()) {
-          char c = client.read();
-          Serial.write(c);
-          // if you've gotten to the end of the line (received a newline
-          // character) and the line is blank, the http request has ended,
-          // so you can send a reply
-          if (c == '\n' && currentLineIsBlank) {
-            // send a standard http response header
-            client.println("HTTP/1.1 200 OK");
-            client.println("Content-Type: text/html");
-            client.println("Connection: close");  // the connection will be closed after completion of the response
-            client.println("Refresh: 5");  // refresh the page automatically every 5 sec
-            client.println();
-            client.println("<!DOCTYPE HTML>");
-            client.println("<html>");
+          // Desplegar el nombre de quien programo el servidor.
+          client.print("<p>Creador del web server: " + USUARIO + "</p>");
 
-            // Desplegar el nombre de quien programo el servidor.
-            client.print("<p>Creador del web server: " + USUARIO + "</p>");
-
-            // output the value of each analog input pin
-            for (int analogChannel = 0; analogChannel < 6; analogChannel++) {
-              int sensorReading = analogRead(analogChannel);
-              client.print("Ingreso analogo ");
-              client.print(analogChannel);
-              client.print(" es ");
-              client.print(sensorReading);
-              client.println("<br />");
-            }
-            client.println("</html>");
-            break;
+          // output the value of each analog input pin
+          for (int analogChannel = 0; analogChannel < 6; analogChannel++) {
+            int sensorReading = analogRead(analogChannel);
+            client.print("Ingreso analogo ");
+            client.print(analogChannel);
+            client.print(" es ");
+            client.print(sensorReading);
+            client.println("<br />");
           }
-          if (c == '\n') {
-            // you're starting a new line
-            currentLineIsBlank = true;
-          } else if (c != '\r') {
-            // you've gotten a character on the current line
-            currentLineIsBlank = false;
-          }
+          client.println("</html>");
+          break;
+        }
+        if (c == '\n') {
+          // you're starting a new line
+          currentLineIsBlank = true;
+        } else if (c != '\r') {
+          // you've gotten a character on the current line
+          currentLineIsBlank = false;
         }
       }
-      // give the web browser time to receive the data
-      delay(1);
-      // close the connection:
-      client.stop();
-      Serial.println("Cliente desconectado.");
     }
-  */
+    // give the web browser time to receive the data
+    delay(1);
+    // close the connection:
+    client.stop();
+    Serial.println("Cliente desconectado.");
+  }
 }
 
 void printIPAddress()
@@ -216,20 +206,41 @@ void printIPAddress()
   // Definir cuantos pixeles avanzar con respecto a las columnas dadas para un digito.
   const byte incrementoX = COLUMNAS_PARA_DIGITO + 1;
 
+  // Guardar por cada byte la cantidad de pixeles a avanzar de acuerdo a la cantidad de digitos en
+  // el byte de la ip.
+  byte coordenadaX = 1;
+  // Definir en que coordenada "Y" escribir la ip.
+  const byte coordenadaY = 1;
+
+  // Limpiar el contenido actual del display.
+  display.clearDisplay();
+
   Serial.print("Mi direccion IP es: ");
-  for (byte thisByte = 0; thisByte < CANTIDAD_NUMEROS_IP; thisByte++) {
+  for (byte byteIp = 0; byteIp < CANTIDAD_NUMEROS_IP; byteIp++) {
     // Obtener el numero actual.
-    const byte numeroIp = Ethernet.localIP()[thisByte];
+    const byte numeroIp = Ethernet.localIP()[byteIp];
+    const String numeroIpTexto = String(numeroIp);
 
     // Desplegar en serial el valor de cada byte de la direccion IP.
     Serial.print(numeroIp, DEC);
     Serial.print(".");
 
     // Desplegar en display el numero actual.
-    DesplegarNumeroIpEnDisplay(numeroIp, (thisByte + 1) * incrementoX, 1, incrementoX);
+    DesplegarNumeroIpEnDisplay(numeroIp, coordenadaX, coordenadaY, incrementoX);
+
+    // Cambiar la coordenada "X" de acuerdo a la cantidad de digitos desplegados en el display.
+    const byte digitosIp = numeroIpTexto.length();
+    coordenadaX += incrementoX * digitosIp;
+    DesplegarPunto(coordenadaX, coordenadaY);
+    coordenadaX += incrementoX;
   }
 
   Serial.println();
+  delay(2000);
+}
+
+DesplegarIpEnDisplay(const String direccionIp, const byte coordenadaX, const byte coordenadaY)
+{
 }
 
 void DesplegarNumeroIpEnDisplay(const byte numeroIp, const byte coordenadaX, const byte coordenadaY,
@@ -406,6 +417,8 @@ void DesplegarPunto(const byte coordenadaX, const byte coordenadaY)
   display.drawPixel(coordenadaX + 2, coordenadaY + 4, WHITE);
   display.drawPixel(coordenadaX + 1, coordenadaY + 5, WHITE);
   display.drawPixel(coordenadaX + 2, coordenadaY + 5, WHITE);
+
+  // Desplegar punto en display.
   display.display();
 }
 
@@ -429,6 +442,6 @@ void DesplegarDigitoEnDisplay(const byte coordenadas[FILAS_PARA_DIGITO][COLUMNAS
     }
   }
 
-  // Desplegar numero deseado en display.
+  // Desplegar digito en display.
   display.display();
 }

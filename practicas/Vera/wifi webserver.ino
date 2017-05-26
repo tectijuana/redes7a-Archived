@@ -4,7 +4,7 @@
 #include <ESP8266mDNS.h>
 
 const char* ssid = "dd-wrt";
-const char* password = "";
+const char* password = "PS123";
 
 ESP8266WebServer server(80);
 
@@ -12,7 +12,7 @@ const int led = 13;
 
 void handleRoot() {
   digitalWrite(led, 1);
-  server.send(200, "text/plain", "hello from RE!");
+  server.send(200, "text/plain", "hello from EV!");
   digitalWrite(led, 0);
 }
 

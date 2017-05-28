@@ -1,4 +1,9 @@
 /*
+   Alumno: Salcedo Morales Jose Manuel (13211419)
+   Web Server para arduino.
+*/
+
+/*
    PINES:
    VCC a 5V
    GND a GND
@@ -49,22 +54,18 @@ static const unsigned char PROGMEM logo16_glcd_bmp[] =
 void setup() {
   Serial.begin(9600);
 
-  // by default, we'll generate the high voltage from the 3.3v line internally! (neat!)
+  // Por defecto generar 3.3 Volts.
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3D (for the 128x64)
-  // init done
 
-  // Show image buffer on the display hardware.
-  // Since the buffer is intialized with an Adafruit splashscreen
-  // internally, this will display the splashscreen.
+  // Desplegar la imagen de adafruit.
   display.display();
   delay(2000);
 
-  // Clear the buffer.
+  // Limpiar el buffer del display.
   display.clearDisplay();
 
-  // Show the display buffer on the hardware.
-  // NOTE: You _must_ call display after making any drawing commands
-  // to make them visible on the display hardware!
+
+  // Mostrar el buffer en el hardware.
   display.display();
   delay(2000);
   display.clearDisplay();

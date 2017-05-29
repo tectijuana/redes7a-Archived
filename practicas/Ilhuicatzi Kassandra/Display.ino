@@ -7,8 +7,8 @@ void draw(void) {
   u8g.setFont(u8g_font_unifont);
   //u8g.setFont(u8g_font_osb21);
   u8g.drawStr( 0, 10, "Hola");
-  u8g.drawStr( 50, 35, "Profe");
-  u8g.drawStr( 10, 56, "-Luis");
+  u8g.drawStr( 50, 35, "Kass");
+  u8g.drawStr( 10, 56, "14211442");
 }
 
 void setup(void) {

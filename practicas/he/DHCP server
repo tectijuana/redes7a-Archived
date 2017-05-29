@@ -1,0 +1,68 @@
+#include <SPI.h>
+#include <Ethernet.h>
+
+byte mac[] = {
+  0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x02
+};
+
+
+EthernetClient client;
+
+void setup() {
+  Serial.begin(9600);
+  // this check is only needed on the Leonardo:
+  while (!Serial) {
+    ; 
+  }
+
+ 
+  if (Ethernet.begin(mac) == 0) {
+    Serial.println("Failed to configure Ethernet using DHCP");
+    
+    for (;;)
+      ;
+  }
+ 
+  printIPAddress();
+}
+
+void loop() {
+
+  switch (Ethernet.maintain())
+  {
+    case 1:
+      Serial.println("Error: renewed fail");
+      break;
+
+    case 2:
+      Serial.println("Renewed success");
+      printIPAddress();
+      break;
+
+    case 3:
+      Serial.println("Error: rebind fail");
+      break;
+
+    case 4:
+      Serial.println("Rebind success");
+
+      printIPAddress();
+      break;
+
+    default:
+
+      break;
+
+  }
+}
+
+void printIPAddress()
+{
+  Serial.print("My IP address: ");
+  for (byte thisByte = 0; thisByte < 4; thisByte++) {
+    Serial.print(Ethernet.localIP()[thisByte], DEC);
+    Serial.print(".");
+  }
+
+  Serial.println();
+}
